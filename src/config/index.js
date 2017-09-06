@@ -8,15 +8,17 @@ export const searchForm={
         },
         to:{
             type:'text',
-            placeholder: 'Enter Destination',
+            placeholder:'Enter Destination',
             name:"to",
             defaultVisbility:false,
         },
         passenger:{
-            Adult:0,
-            Child:[]
+            type:'multipleSelect',
+            content:{
+                Adult:0,
+                Child:[]
+            }
+
         }
     }
-
-
 }

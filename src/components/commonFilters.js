@@ -29,12 +29,12 @@ export function renderOption(allOptions, value, name){
     )
 }
 export function renderInput(field){
-    console.log('heres')
+    console.log(field)
     const {meta:{touched, error}} = field;
     const classN= `${ touched && error ? 'inputError':'' }`;
     return(
         <span>
-            <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} value={field.value} {...field.input} />
+            <input className={classN}  type={field.type} name={field.name} placeholder={field.placeholder} value={field.input.value}  {...field.input} />
             <span className='textError'>{touched ? error : ''}</span>
         </span>
     )

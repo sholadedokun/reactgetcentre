@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Link,  } from 'react-router-dom';
 import {Grid, Col, Row, Nav} from 'react-bootstrap';
 import {searchForm} from "../config"
+import Icon from './icon'
 import { Field, FieldArray, reduxForm } from 'redux-form';
 import {renderInput, renderOption, renderTextarea} from './commonFilters'
 import _ from 'lodash'
@@ -13,6 +14,7 @@ class Header extends(Component){
         super();
         this.state={
             currentSearch:'FLIGHT',
+            searchParameter:searchForm
         }
     }
     componentWillMount(){
@@ -57,15 +59,62 @@ class Header extends(Component){
             </span>
         )
     }
+    counter(item, operation){
+
+        let newValue =
+        (operation==='+')?
+            (_.isArray(item)) ? item.push([]) : ++item
+        :
+            (_.isArray(item)) ? item.pop() : (item > 0)? --item : item=0
+        return newValue
+    }
+    updateSearchParameter(superIndex, item, index, operation){
+        let {searchParameter,currentSearch } = this.state;
+        let newState={...searchParameter}
+        newState[currentSearch][superIndex].content[index] = this.counter(newState[currentSearch][superIndex].content[index], operation)
+        console.log(newState[currentSearch][superIndex].content[index])
+        // newState[superIndex][item][index] = this.counter(newState[superIndex][item][index], operation)
+        // console.log(newState)
+        // valueToChange=this.counter(item, index, operation)
+
+        this.setState({
+            searchParameter:newState
+        })
+    }
     renderSearchForm(){
-        console.log(searchForm);
+         console.log(this.state.searchParameter);
+         const {searchParameter, currentSearch} =this.state
         return(
 
-            _.map(searchForm[this.state.currentSearch], (item, index)=>
+            _.map(this.state.searchParameter[this.state.currentSearch], (item, superIndex)=>{
+                return(
+                    (item.type=='text')?
+                        <li key={_.uniqueId()}><Field component={renderInput} type={item.type}  name={item.type} placeholder={item.placeholder} /></li> :
+                        (superIndex=='passenger')?
+                            <li key={_.uniqueId()}>
+                                {_.map(item.content, (input, index)=>{
+                                    return(
+                                        <Col xs={6} key={_.uniqueId()}>
+                                            <span class="passengerAdder" onClick={this.updateSearchParameter.bind(this, superIndex, item, index, "+")}>
+                                                <Icon icon="plus" />
+                                            </span>
+                                            <span class="passengerAdder" onClick={this.updateSearchParameter.bind(this, superIndex, item, index, "-")}>
+                                                <Icon icon="minus" />
+                                            </span>
+                                            {console.log(searchParameter[currentSearch][superIndex].content[index])}
+                                            <Field component={renderInput} type='text' name={index}  value="ghhghg" />
+                                            {index}
+                                        </Col>
+                                    )
+                                    })
+                                }
 
-                    <li>
-                        <Field component={renderInput} type={item.type} name={item.type} placeholder={item.placeholder} />
-                    </li>
+                            </li>
+                            :
+                            ''
+                    )
+
+            }
 
             )
         )

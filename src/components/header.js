@@ -59,20 +59,36 @@ class Header extends(Component){
             </span>
         )
     }
+    count(value){
+        console.log(value)
+        return  (_.isArray(value)) ? value.length : value
+    }
     counter(item, operation){
 
-        let newValue =
-        (operation==='+')?
-            (_.isArray(item)) ? item.push([]) : ++item
-        :
-            (_.isArray(item)) ? item.pop() : (item > 0)? --item : item=0
-        return newValue
+        if(operation==='+'){
+            if(_.isArray(item)){
+                item.push('')
+                return item;
+            }
+            return ++item
+        }
+        else{
+            if(_.isArray(item)){
+                item.pop();
+                return item
+            }
+            if(item > 0)  return  --item
+            return 0
+        }
     }
     updateSearchParameter(superIndex, item, index, operation){
         let {searchParameter,currentSearch } = this.state;
         let newState={...searchParameter}
-        newState[currentSearch][superIndex].content[index] = this.counter(newState[currentSearch][superIndex].content[index], operation)
         console.log(newState[currentSearch][superIndex].content[index])
+
+        newState[currentSearch][superIndex].content[index] = this.counter(newState[currentSearch][superIndex].content[index], operation)
+        // console.log(newState[currentSearch][superIndex].content[index])
+        // console.log(newState[currentSearch][superIndex].content[index])
         // newState[superIndex][item][index] = this.counter(newState[superIndex][item][index], operation)
         // console.log(newState)
         // valueToChange=this.counter(item, index, operation)
@@ -80,6 +96,12 @@ class Header extends(Component){
         this.setState({
             searchParameter:newState
         })
+    }
+    renderChildren(index){
+        if(index=="Child"){
+            _.map()
+        }
+
     }
     renderSearchForm(){
          console.log(this.state.searchParameter);
@@ -89,7 +111,7 @@ class Header extends(Component){
             _.map(this.state.searchParameter[this.state.currentSearch], (item, superIndex)=>{
                 return(
                     (item.type=='text')?
-                        <li key={_.uniqueId()}><Field component={renderInput} type={item.type}  name={item.type} placeholder={item.placeholder} /></li> :
+                        <li key={_.uniqueId()}><input type="text"  name={item.type} placeholder={item.placeholder} /></li> :
                         (superIndex=='passenger')?
                             <li key={_.uniqueId()}>
                                 {_.map(item.content, (input, index)=>{
@@ -102,8 +124,16 @@ class Header extends(Component){
                                                 <Icon icon="minus" />
                                             </span>
                                             {console.log(searchParameter[currentSearch][superIndex].content[index])}
-                                            <Field component={renderInput} type='text' name={index}  value="ghhghg" />
-                                            {index}
+                                            <input type='text' name={index}  value={this.count(searchParameter[currentSearch][superIndex].content[index])} />
+                                            {
+                                                index==="Child"? _.map(searchParameter[currentSearch][superIndex].content[index], (item, childIndex)=>{
+                                                    return(
+                                                        <input  type="text" value={item} placeholder="Input date of birth" />
+                                                    )
+
+                                                }):''
+
+                                            }
                                         </Col>
                                     )
                                     })

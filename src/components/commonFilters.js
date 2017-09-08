@@ -29,7 +29,6 @@ export function renderOption(allOptions, value, name){
     )
 }
 export function renderInput(field){
-    console.log(field)
     const {meta:{touched, error}} = field;
     const classN= `${ touched && error ? 'inputError':'' }`;
     return(
